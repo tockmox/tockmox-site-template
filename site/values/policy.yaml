@@ -1,2 +1,19 @@
-# Overrides for tockmox-policy. Globals are inherited.
+# tockmox-policy overrides. Globals are inherited from global.yaml.
+#
+# Namespace defaults carry the reserved `tockmox-` prefix so a greenfield
+# install is prefix-clean. If you are adopting Tockmox into an EXISTING
+# cluster, override these to your current namespace names rather than
+# renaming: a namespace rename destroys and recreates everything inside it.
+#
+# namespaces:
+#   ai: ai
+#   monitoring: monitoring
+#   traefik: traefik
+
+# Namespace holding your own agent sandbox, if you run one. Empty drops the
+# NetworkPolicy rule that would admit it to telemetry.
+namespaces:
+  claude_sandbox: ""
+
+# Every shipped app is individually disableable.
 apps: {}

@@ -1,9 +1,25 @@
+# Global site values. Every Tockmox layer chart reads these.
+# Referenced FIRST in each Application's valueFiles, before the per-layer file.
 global:
   internalDomain: int.example.com
   externalDomain: example.com
   storageClass: longhorn
   certIssuer: private-ca-issuer
+
+  # Leave empty to pull from upstream registries.
+  # Airgap: mirror the images, then point this at your registry.
   imageRegistry: ""
+
   timezone: America/Chicago
+
+  # Pod and Service networks. k3s defaults shown.
   clusterCIDR: 10.42.0.0/16
   serviceCIDR: 10.43.0.0/16
+
+  # REQUIRED, no default. The LAN/node network your cluster sits on, admitted
+  # by NetworkPolicies that must accept traffic from outside the cluster
+  # (syslog senders, node-level registry pulls). A wrong value here either
+  # breaks ingest or opens a hole, so Tockmox refuses to guess.
+  lanCIDR: 192.168.1.0/24
+
+  nodeClassLabel: tockmox.sh/node-class
