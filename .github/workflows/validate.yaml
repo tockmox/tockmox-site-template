@@ -1,0 +1,63 @@
+# Structural checks only. This repository holds no charts, so there is nothing
+# to render here ... what it can prove is that the YAML parses and that every
+# layer Application points at a values file that exists.
+name: validate
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Every YAML file parses
+        run: |
+          python3 - <<'PY'
+          import pathlib, sys, yaml
+          bad = []
+          for p in sorted(pathlib.Path('.').rglob('*.y*ml')):
+              if '.git/' in str(p):
+                  continue
+              try:
+                  list(yaml.safe_load_all(p.read_text()))
+              except Exception as e:
+                  bad.append(f"{p}: {e}")
+          if bad:
+              print("\n".join(bad)); sys.exit(1)
+          print("all YAML parses")
+          PY
+
+      - name: Every layer Application has its values file
+        run: |
+          python3 - <<'PY'
+          import pathlib, sys, yaml
+          missing = []
+          for p in sorted(pathlib.Path('bootstrap/applications').glob('*.yaml')):
+              doc = yaml.safe_load(p.read_text())
+              for src in doc['spec'].get('sources', []):
+                  for vf in src.get('helm', {}).get('valueFiles', []):
+                      rel = vf.replace('$site/', '')
+                      if not pathlib.Path(rel).is_file():
+                          missing.append(f"{p.name} references {rel}, which does not exist")
+          if missing:
+              print("\n".join(missing)); sys.exit(1)
+          print("every referenced values file exists")
+          PY
+
+      - name: No unsealed secret material
+        run: |
+          if git ls-files | grep -Ei '\.(pem|key)$|\.plain\.ya?ml$|(^|/)kubeconfig$'; then
+            echo "::error::unsealed secret material is tracked in this repository"
+            exit 1
+          fi
+          if git grep -nE 'kind:[[:space:]]*Secret$' -- '*.yaml' '*.yml' | grep -v SealedSecret; then
+            echo "::error::a plain Secret is committed; seal it instead"
+            exit 1
+          fi
+          echo "no unsealed secret material"

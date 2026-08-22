@@ -1,9 +1,14 @@
 # This is a TEMPLATE. It must stay safe to make public.
 # Real secrets never live here as plaintext ... only SealedSecrets, which are
-# encrypted to your cluster key and safe to commit.
+# encrypted to your cluster's key and safe to commit.
 *.tgz
 .DS_Store
 
-# Never commit an unsealed secret or a kubeconfig.
+# Never commit an unsealed secret, a kubeconfig, or a token.
 *.kubeconfig
 kubeconfig
+secrets/*.plain.yaml
+secrets/*.unsealed.yaml
+*.pem
+*.key
+.env

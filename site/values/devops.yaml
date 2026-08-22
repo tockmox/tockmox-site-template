@@ -1,2 +1,24 @@
-# Overrides for tockmox-devops. Globals are inherited.
+# Overrides for tockmox-devops. Globals are inherited from global.yaml.
+#
+# The SSO endpoints below cannot be derived by the chart: the upstream
+# argo-workflows chart takes the issuer and redirect URL as plain values it
+# does not template. They must be edited by hand whenever internalDomain or
+# certIssuer changes ... http when certIssuer is empty, https when it is set.
+argo-workflows:
+  server:
+    authModes: ["sso", "client"]
+    sso:
+      enabled: true
+      issuer: https://auth.int.example.com/application/o/tockmox-argo/
+      clientId:
+        name: tockmox-sso-argo
+        key: client-id
+      clientSecret:
+        name: tockmox-sso-argo
+        key: client-secret
+      redirectUrl: https://workflows.int.example.com/oauth2/callback
+      scopes: ["openid", "email", "profile"]
+      rbac:
+        enabled: true
+
 apps: {}

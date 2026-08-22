@@ -1,0 +1,35 @@
+# Applied by the parent Application in ../root.yaml, which is what makes the
+# sync-wave annotation below actually sequence. Applying this file directly
+# with kubectl works, and the wave then does nothing.
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: tockmox-identity
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "4"
+spec:
+  project: default
+  destination:
+    server: https://kubernetes.default.svc
+    # Where this layer's workloads land. Must match what the policy layer's
+    # NetworkPolicies guard; see the namespaces map in tockmox-policy.
+    namespace: tockmox-authentik
+  sources:
+    - repoURL: https://github.com/tockmox/tockmox
+      targetRevision: v0.5.0
+      path: charts/tockmox-identity
+      helm:
+        valueFiles:
+          - $site/site/values/global.yaml
+          - $site/site/values/identity.yaml
+    - repoURL: PLACEHOLDER_SITE_REPO_URL
+      targetRevision: main
+      ref: site
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=true

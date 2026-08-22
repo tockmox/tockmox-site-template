@@ -1,25 +1,48 @@
-# Global site values. Every Tockmox layer chart reads these.
-# Referenced FIRST in each Application's valueFiles, before the per-layer file.
+# Global site values. Every Tockmox layer chart reads this file, referenced
+# first in each Application's valueFiles, before the per-layer file.
+#
+# Reference: docs/administration/configuration.md in the Tockmox repository.
 global:
+  # REQUIRED, no default. Base for every internal hostname: grafana.<this>,
+  # auth.<this>, chat.<this>. These need not resolve publicly.
   internalDomain: int.example.com
-  externalDomain: example.com
-  storageClass: longhorn
-  certIssuer: private-ca-issuer
 
-  # Leave empty to pull from upstream registries.
-  # Airgap: mirror the images, then point this at your registry.
+  # REQUIRED, no default. The LAN/node network this cluster sits on, admitted
+  # by the NetworkPolicies that must accept traffic originating outside the
+  # cluster (syslog senders, node-level image pulls). A wrong value here either
+  # breaks ingest or opens a hole, so Tockmox refuses to guess.
+  lanCIDR: 192.168.1.0/24
+
+  # The cert-manager ClusterIssuer that signs every console certificate.
+  # `tockmox-ca` is the private CA the platform layer ships. Naming it turns
+  # every console URL from http to https, and Authentik's OIDC redirect URIs
+  # move with it on the same sync.
+  #
+  # Browsers reject this CA until it is in your trust store. That is expected:
+  # docs/administration/tls-and-trust.md has the per-OS instructions. Set this
+  # to "" to stay on http while you evaluate.
+  certIssuer: tockmox-ca
+
+  # THE STORAGE CONTRACT, both halves.
+  #
+  # storageClass is for data whose only copy is the volume. Leaving it empty
+  # is not "choose nothing": it falls through to whatever the cluster's default
+  # StorageClass happens to be, which on k3s is local-path ... node-local, one
+  # copy, no snapshots, no backup target. Name the class.
+  storageClass: longhorn
+  # localStorageClass is for data the application already replicates, or that
+  # can be rebuilt: the metrics TSDB, log chunks, a Postgres cluster streaming
+  # to its replicas. Node-local by design. Do not point it at anything whose
+  # loss you would mind.
+  localStorageClass: local-path
+
+  # Mirror prefix for an air-gapped install. Empty pulls from upstream
+  # registries. See docs/deployment/airgap.md.
   imageRegistry: ""
 
-  timezone: America/Chicago
+  # IANA zone for scheduled jobs.
+  timezone: UTC
 
   # Pod and Service networks. k3s defaults shown.
   clusterCIDR: 10.42.0.0/16
   serviceCIDR: 10.43.0.0/16
-
-  # REQUIRED, no default. The LAN/node network your cluster sits on, admitted
-  # by NetworkPolicies that must accept traffic from outside the cluster
-  # (syslog senders, node-level registry pulls). A wrong value here either
-  # breaks ingest or opens a hole, so Tockmox refuses to guess.
-  lanCIDR: 192.168.1.0/24
-
-  nodeClassLabel: tockmox.sh/node-class

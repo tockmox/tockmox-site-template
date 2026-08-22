@@ -1,2 +1,14 @@
-# Overrides for tockmox-platform. Globals are inherited.
+# Overrides for tockmox-platform. Globals are inherited from global.yaml.
+# Anything you set here wins.
+
+# REQUIRED. MetalLB refuses to render without a pool, on purpose: a
+# LoadBalancer Service that stays Pending forever is a worse failure than an
+# error at render time. Traefik takes the first address in this range.
+#
+# Pick a range inside your lanCIDR that DHCP does not hand out. Set
+# apps.addressPool.enabled to false instead if you manage pools yourself.
+addressPool:
+  range: 192.168.1.200-192.168.1.220
+
+# Every shipped app is individually disableable.
 apps: {}
