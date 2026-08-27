@@ -17,7 +17,10 @@ Full detail: `docs/deployment/prerequisites.md` in the Tockmox repository.
 
 ## Quick start
 
-**1.** Create your own repository from this one, and clone it.
+**1.** Click **Use this template**, choose *Create a new repository*, then clone
+your copy. Forking also works, but a fork keeps this repository's history and
+stays linked to it as a fork; a template gives a clean first commit that is
+yours.
 
 **2.** Set the two required values in `site/values/global.yaml`:
 `global.internalDomain` and `global.lanCIDR`. Neither has a default, because a
