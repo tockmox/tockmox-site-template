@@ -12,3 +12,8 @@ secrets/*.unsealed.yaml
 *.pem
 *.key
 .env
+
+# Local handoff / apply scripts. Generated per working session, run once, deleted.
+# Ignored as a class rather than by prefix so a new script shape never starts life
+# unignored. Note that gitignore does not affect already-tracked files.
+_*.sh
