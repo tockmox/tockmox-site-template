@@ -100,12 +100,38 @@ against a live cluster:
 ./install/tockmox-install.sh --config tockmox.yaml --dry-run
 ```
 
-Use whichever you prefer. The output is the same shape.
+Use whichever you prefer. The output is the same shape, down to the
+`repoURL` string: both write `https://github.com/tockmox/tockmox.git`, with
+the suffix. ArgoCD would not have cared either way (`util/git.NormalizeGitURL`
+strips `.git`, lowercases and trims before every repository, credential
+template and project `sourceRepos` match, at 2.6 and still at 3.5), but two
+generators emitting two strings for one repository is a diff an evaluator has
+to explain, so the template carries the installer's form.
 
 ## Moving to a newer Tockmox
 
 Change `targetRevision` in `bootstrap/applications/*.yaml` and sync. Read the
 release notes first: a values key that moved is called out there by name.
+
+## Why this repository has no tags of its own
+
+Each Tockmox release re-pins this template by hand (nine `targetRevision`
+lines and the "Pinned to" line above), and that pin is the whole record of
+which release a template state matches. No tag is cut here until the Tockmox
+repository is public (ADR-0045, at LLC formation), for three reasons:
+
+- A tag is a second thing to remember at release time, and a forgotten one
+  is a new way for this repository and the release to disagree ... the exact
+  failure the re-pin step exists to prevent.
+- Until publication nobody but the maintainer needs an older scaffold, so a
+  tag has no reader yet.
+- Publication of the Tockmox repository is a one-time history cut (an orphan
+  commit at first public release). Every pin this template has carried so
+  far names a pre-cut Tockmox tag, so a template tag made now would freeze
+  a `targetRevision` that no public checkout can resolve.
+
+At publication the question is reopened once, with the release skill deciding
+whether a template tag becomes a release step.
 
 ---
 
