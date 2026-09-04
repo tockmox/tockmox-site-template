@@ -16,7 +16,7 @@ spec:
     # NetworkPolicies guard; see the namespaces map in tockmox-policy.
     namespace: argocd
   sources:
-    - repoURL: https://github.com/tockmox/tockmox
+    - repoURL: https://github.com/tockmox/tockmox.git
       targetRevision: v0.6.0-rc1
       path: charts/tockmox-policy
       helm:
