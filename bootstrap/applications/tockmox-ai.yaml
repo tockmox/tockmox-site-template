@@ -17,7 +17,7 @@ spec:
     namespace: tockmox-ai
   sources:
     - repoURL: https://github.com/tockmox/tockmox.git
-      targetRevision: v0.6.0-rc2
+      targetRevision: v0.6.0-rc3
       path: charts/tockmox-ai
       helm:
         valueFiles:
