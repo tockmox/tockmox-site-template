@@ -64,7 +64,8 @@ site/values/<layer>.yaml    per-layer overrides
 apps/                       your own workloads
 secrets/                    your SealedSecrets
 bootstrap/root.yaml         the only thing you apply by hand
-bootstrap/applications/     one Application per layer, sync-wave ordered
+bootstrap/applications/     one Application per layer, plus site-secrets and
+                            site-apps for your own content, sync-wave ordered
 ```
 
 ## Sync waves
@@ -72,7 +73,7 @@ bootstrap/applications/     one Application per layer, sync-wave ordered
 | Wave | Layer |
 |---|---|
 | 0 | `tockmox-crds` |
-| 1 | `tockmox-policy` |
+| 1 | `tockmox-policy`, `site-secrets` (everything in `secrets/`) |
 | 2 | `tockmox-platform` |
 | 3 | `tockmox-observability`, `tockmox-exporters` |
 | 4 | `tockmox-identity` |
