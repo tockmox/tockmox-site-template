@@ -17,7 +17,7 @@ spec:
     namespace: tockmox-selfcheck
   sources:
     - repoURL: https://github.com/tockmox/tockmox.git
-      targetRevision: v0.6.0-rc5
+      targetRevision: v0.6.0
       path: charts/tockmox-selfcheck
       helm:
         valueFiles:
