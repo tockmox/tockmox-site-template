@@ -35,12 +35,22 @@ than `sed -i` because the two disagree about in-place editing across macOS and
 Linux:
 
 ```bash
-grep -rl PLACEHOLDER_SITE_REPO_URL . \
+grep -rl --include='*.yaml' PLACEHOLDER_SITE_REPO_URL . \
   | xargs perl -pi -e 's|PLACEHOLDER_SITE_REPO_URL|https://github.com/you/your-site|g'
 
-grep -rl int.example.com . \
+grep -rl --include='*.yaml' 'int\.example\.com' . \
   | xargs perl -pi -e 's|int\.example\.com|int.yourdomain|g'
 ```
+
+**`--include='*.yaml'` is not optional.** Both placeholders also appear in the
+Markdown that *explains* them ... including this code block. Without the filter
+these commands rewrite their own instructions, so afterwards this page tells you
+to replace `https://github.com/you/your-site`, and `secrets/README.md` tells you
+to replace a URL that is already yours. Nothing breaks, and the next person to
+read the page is misled by it.
+
+Every file that genuinely needs substituting is YAML: twelve for the repository
+URL, two for the domain.
 
 **5.** Commit and push. ArgoCD reads your values over git, so this repository
 must be reachable from the cluster.
