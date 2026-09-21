@@ -18,7 +18,25 @@ makes them safe to commit ... nobody else can decrypt them, including the
 Tockmox project.
 
 ```bash
-kubeseal --format yaml < my-secret.plain.yaml > my-secret.yaml
+kubeseal --format yaml \
+    --controller-name sealed-secrets \
+    --controller-namespace kube-system \
+  < my-secret.plain.yaml > my-secret.yaml
+```
+
+**Do not drop the two `--controller-*` flags.** They name the sealed-secrets
+Service a Tockmox install actually creates. `kubeseal`'s own default
+(`sealed-secrets-controller`) does not match it, and **without them the `>`
+redirect leaves a zero-byte file that looks minted** ... no error, a file on
+disk, and nothing in it. Commit that and ArgoCD applies it happily, no Secret
+appears, and the symptom is `CreateContainerConfigError` on Authentik, Grafana,
+LiteLLM and ntfy, which reads as a broken chart rather than an unsealed secret.
+
+Check the output before committing it. A sealed secret is only sealed if it has
+an `encryptedData` block:
+
+```bash
+grep -q 'encryptedData' my-secret.yaml && echo sealed || echo "NOT SEALED"
 ```
 
 `secrets/*.plain.yaml` is gitignored so the unsealed input does not follow the
