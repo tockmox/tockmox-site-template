@@ -5,7 +5,7 @@ of Tockmox** ... only what is yours: values, secrets, and your own
 applications. Upgrading Tockmox means changing `targetRevision` and syncing.
 Nothing here is touched by an upgrade.
 
-Pinned to **v0.6.1**.
+Pinned to **v0.6.2**.
 
 ## Prerequisites
 
