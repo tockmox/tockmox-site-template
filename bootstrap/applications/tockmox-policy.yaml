@@ -17,7 +17,7 @@ spec:
     namespace: argocd
   sources:
     - repoURL: https://github.com/tockmox/tockmox.git
-      targetRevision: v0.6.2
+      targetRevision: v0.7.0
       path: charts/tockmox-policy
       helm:
         valueFiles:
