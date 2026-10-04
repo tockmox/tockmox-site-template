@@ -17,7 +17,7 @@ spec:
     namespace: tockmox-authentik
   sources:
     - repoURL: https://github.com/tockmox/tockmox.git
-      targetRevision: v0.7.1-rc3
+      targetRevision: v0.7.1-rc4
       path: charts/tockmox-identity
       helm:
         valueFiles:
