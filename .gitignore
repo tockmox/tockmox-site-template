@@ -17,3 +17,8 @@ secrets/*.unsealed.yaml
 # Ignored as a class rather than by prefix so a new script shape never starts life
 # unignored. Note that gitignore does not affect already-tracked files.
 _*.sh
+
+# mint-secrets.sh stages sealed files here while it runs and removes the
+# directory on exit; only a killed run leaves one behind. Matches what the
+# installer generates (TM-0621).
+secrets/.mint.*/
