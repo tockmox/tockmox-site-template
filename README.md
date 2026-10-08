@@ -124,6 +124,21 @@ to explain, so the template carries the installer's form.
 Change `targetRevision` in `bootstrap/applications/*.yaml` and sync. Read the
 release notes first: a values key that moved is called out there by name.
 
+## The re-pin window
+
+Each release re-pins this template **before** the Tockmox tag is pushed, so the
+pin can be verified while it can still be fixed. For that short time the pin
+above names a tag that does not exist yet, and a clone made then gets
+Applications that ArgoCD cannot read: the charts at that `targetRevision` do not
+resolve. The window is accepted, not hidden. It opens when the re-pin merges and
+closes when the Tockmox tag is pushed, and it is expected to last **hours**, not
+days. It opens at release candidates too.
+
+If a sync fails because ArgoCD cannot resolve the pinned `targetRevision`, check
+the Tockmox releases page: if the tag is absent the window is open, so wait for
+the tag or pin the previous one. The release procedure that sets this order is in
+`RELEASING.md` in the Tockmox repository, under "The re-pin window".
+
 ## Why this repository has no tags of its own
 
 Each Tockmox release re-pins this template by hand (nine `targetRevision`
