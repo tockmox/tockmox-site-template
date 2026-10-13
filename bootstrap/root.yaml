@@ -1,0 +1,26 @@
+# The Tockmox root Application ("app of apps").
+#
+# Apply THIS ONE:  kubectl apply -f bootstrap/root.yaml
+#
+# It owns the layer Applications in bootstrap/applications/, which is what
+# gives their sync-wave annotations effect. Waves applied flat with kubectl do
+# not sequence ... ArgoCD orders resources within an Application, and without a
+# parent there is no Application to order them within.
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: tockmox-root
+  namespace: argocd
+spec:
+  project: default
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: argocd
+  source:
+    repoURL: PLACEHOLDER_SITE_REPO_URL
+    targetRevision: main
+    path: bootstrap/applications
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true

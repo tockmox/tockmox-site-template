@@ -1,0 +1,31 @@
+# Fails when the release pins under bootstrap/applications/ disagree with
+# each other, or with the README's "Pinned to" line. This template is a
+# hand-maintained copy of installer output and rots (see README.md,
+# "Generating this instead"); TM-0675 in the private Tockmox tracker found a
+# real drift of this shape by running the check by hand, three hours before
+# the 0.6.0 tag. See check-pin-consistency.sh in this directory for exactly
+# what is and is not checked, and why the "how far behind the latest
+# tockmox/tockmox release" check is not implemented here.
+name: pin-consistency
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  pin-consistency:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: the check refuses what it claims to refuse (selftest)
+        # Proven against fixtures, never this repository's own tree, so a
+        # clean run below actually means something. Same reasoning as every
+        # --selftest gate in tockmox/tockmox's tools/check-*.sh.
+        run: bash .github/workflows/check-pin-consistency.sh --selftest
+
+      - name: targetRevision pins agree with each other and with the README
+        run: bash .github/workflows/check-pin-consistency.sh
